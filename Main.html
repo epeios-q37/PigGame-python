@@ -1,0 +1,42 @@
+<fieldset style="display: flex; flex-direction: column; padding-top: 15px; width: 50%;">
+  <span style="display: flex; align-items: center;">
+    <span id="LabelA" class="meter-label">You</span>
+    <span id="MarkerA" class="marker">➤</span>
+    <span id="player1" class="meter-container">
+      <span id="ScoreMeterA" class="meter winner score-meter" style="width: 20%"></span>
+      <span id="TurnMeterA" class="meter turn-meter" style="width: 70%""></span>
+    </span>
+    <span style="width: 10px;"></span>
+    <output id="ScoreTextA" class="score-text">100</output>
+  </span>
+  <span style="height: 15px;"></span>
+  <span style="display: flex; align-items: center;">
+    <span  id="LabelB" class="meter-label">Opponent</span>
+    <span id="MarkerB" class="marker">➤</span>
+    <span id="player1" class="meter-container">
+      <span id="ScoreMeterB" class="meter winner score-meter" style="width: 30%"></span>
+      <span id="TurnMeterB" class="meter turn-meter" style="width: 5%"></span>
+    </span>
+    <span style="width: 10px;"></span>
+    <output id="ScoreTextB" class="score-text">10</output>
+  </span>
+  <span style="height: 15px;"></span>
+  <span style="display: flex; flex-direction: row; justify-content: space-around;">
+    <span>
+      <span>Cumul - Total: </span>
+      <output id="Cumul" class="turn-text">59</output>
+      <output id="Total" class="turn-text">95</output>
+    </span>
+  </span>
+  <span style="height: 15px;"></span>
+  <span style="width: 100%; display: flex; justify-content: space-around; align-items: center;">
+    <button id="Roll" data-xdh-onevent="Roll">ROLL</button>
+    <input id="debug" data-xdh-onevent="Roll" class="removed" size="3" maxlength="3"/>
+    <span id="dice" style="width: 100px; height: 100px;"></span>
+    <button id="Hold" data-xdh-onevent="Hold">HOLD</button>
+  </span>
+  <span style="height: 15px;"></span>
+  <span style="display: flex; justify-content: center;">
+    <button id="New" data-xdh-onevent="New" disabled>New game</button>
+  <span>
+</fieldset>
