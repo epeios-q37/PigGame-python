@@ -23,14 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import os, sys
-
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-sys.path.extend(["../../atlastk", "."])
-
 import atlastk, random
 
-DEBUG = True  # Uncomment for debug mode.
+# DEBUG = True  # Uncomment for debug mode.
 
 LIMIT = 100
 
