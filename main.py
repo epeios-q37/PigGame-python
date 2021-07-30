@@ -80,14 +80,17 @@ def fade(dom, element):
   dom.add_class(element, "fade-in")
 
 
-def update_meter(dom, ab, score, turn):
-  if current + turn > LIMIT:
-    turn = LIMIT - current
+METER = '<span class="{}" style="width: {}%;"></span>'
 
-  fade(dom, f"TurnMeter{ab}")
-  dom.set_attribute(f"TurnMeter{ab}", "style", f"width: {turn}%;")
 
-  dom.set_attribute(f"ScoreMeter{ab}", "style", f"width: {score}%;")
+def update_meter(dom, ab, score, turn, dice): # turn includes dice
+  if score + turn > LIMIT:
+    turn = LIMIT - score
+
+  if turn != 0:
+    dom.end(f"ScoreMeter{ab}", METER.format("fade-in dice-meter", dice))
+  else:
+    dom.inner(f"ScoreMeter{ab}", METER.format("score-meter", score))
 
   dom.set_content(f"ScoreText{ab}", score)
 
@@ -112,8 +115,10 @@ def get_opponent(player_ab):
 
 
 def mark_player(dom, ab):
-  dom.remove_class(f"Marker{ab}", "hidden")
-  dom.add_class(f"Marker{get_opponent(ab)}", "hidden") 
+  if ab == 'B':
+    dom.disable_element("DisplayMarkerA")
+  else:
+    dom.enable_element("DisplayMarkerA")
 
 
 def display_dice(dom, value):
@@ -126,8 +131,8 @@ def display_dice(dom, value):
 
 def update_meters(dom, status):
   if status == SPY:
-    update_meter(dom, 'A', scores[1], turn if current == 1 else 0)
-    update_meter(dom, 'B', scores[2], turn if current == 2 else 0)
+    update_meter(dom, 'A', scores[1], turn if current == 1 else 0, dice if current == 1 else 0)
+    update_meter(dom, 'B', scores[2], turn if current == 2 else 0, dice if current == 2 else 0)
   else:
     a = current
     me = True
@@ -138,8 +143,8 @@ def update_meters(dom, status):
 
     b = get_opponent(a)
 
-    update_meter(dom, 'A', scores[a], turn if me else 0)
-    update_meter(dom, 'B', scores[b], 0 if me else turn)
+    update_meter(dom, 'A', scores[a], turn if me else 0, dice if me else 0)
+    update_meter(dom, 'B', scores[b], 0 if me else turn, 0 if me else dice)
 
 
 def update_markers(dom, status):
@@ -164,8 +169,8 @@ def display_turn(dom, element, value):
 
 
 def update_dice(dom, winner):
-  if winner != 0 or turn != 0 or dice == 0:
-      display_dice(dom, dice)
+  if winner != 0 or turn != 0 or dice in [0, 1]:
+    display_dice(dom, dice)
 
 
 def update_turn(dom, winner):
@@ -180,7 +185,7 @@ def report_winner(dom, player, winner):
   else:
     ab = 'B'
 
-  dom.set_content(f"ScoreMeter{ab}", "Winner!")
+  dom.set_content(f"ScoreMeter{ab}", "<span class='winner'>Winner!</span>")
 
 
 def update_layout(dom, player):
@@ -208,10 +213,7 @@ def display(dom, user):
     dom.enable_element("New")
 
   if available == 0 and user.player == 0:
-    dom.set_contents({
-      "LabelA": "Player 1",
-      "LabelB": "Player 2"
-    })
+    dom.disable_element("PlayerView")
 
   update_layout(dom, user.player)
 
@@ -249,7 +251,7 @@ def ac_roll(user, dom):
 
   if dice == 1:
     current = get_opponent(current)
-    turn = -1 # To force the displaying of the dice.
+    turn = 0
   else:
     turn += dice
 
@@ -274,7 +276,7 @@ def ac_hold(user, dom):
   atlastk.broadcast_action("Display")
 
 
-def ac_new(dom):
+def ac_new():
   init()
   atlastk.broadcast_action("Display")
 
@@ -282,6 +284,7 @@ def ac_new(dom):
 def ac_display(user, dom):
   if current == 1 and available == 1:
     dom.inner("", open("Main.html").read())
+    dom.enable_element("PlayerView")
     if debug():
       dom.remove_class("debug", "removed")
     user.player = 0
